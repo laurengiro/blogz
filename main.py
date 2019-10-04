@@ -19,8 +19,14 @@ class Blog(db.Model):
 
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
-    blogs = Blog.query.all()
-    return render_template('blog.html',title='Build a Blog', blogs=blogs)
+
+    blog_id = request.args.get('id')
+    if blog_id:
+        blog = Blog.query.filter_by(id=int(blog_id)).all()
+        return render_template('single_blog.html', blog=blog)
+    else:
+        blogs = Blog.query.all()
+        return render_template('blog.html',title='Build a Blog', blogs=blogs)
 
 
 def test_empty(field):
@@ -49,7 +55,8 @@ def new_post():
             new_blog = Blog(blog_title, blog_body)
             db.session.add(new_blog)
             db.session.commit()
-            return redirect('/blog')
+            blog_id = new_blog.id
+            return redirect('/blog?id={0}'.format(blog_id))
         else:
             return render_template('new_post.html', title=blog_title, body=blog_body, title_error=title_error, body_error=body_error)
     else:
