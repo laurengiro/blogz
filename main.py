@@ -23,10 +23,10 @@ def index():
     blog_id = request.args.get('id')
     if blog_id:
         blog = Blog.query.filter_by(id=int(blog_id)).all()
-        return render_template('single_blog.html', blog=blog)
+        return render_template('single_blog.html', title='Blog', blog=blog)
     else:
         blogs = Blog.query.all()
-        return render_template('blog.html',title='Build a Blog', blogs=blogs)
+        return render_template('blog.html', title='Build a Blog', blogs=blogs)
 
 
 def test_empty(field):
@@ -39,17 +39,17 @@ def test_empty(field):
 def new_post():
 
     if request.method == 'POST':
-        blog_title = request.form['title']
+        blog_title = request.form['blog_title']
         blog_body = request.form['body']
 
         title_error = ''
         body_error = ''
 
         if test_empty(blog_title):
-            title_error = "Please fill in the title"
+            title_error = 'Please fill in the title'
 
         if test_empty(blog_body):
-            body_error = "Please fill in the body"
+            body_error = 'Please fill in the body'
 
         if not title_error and not body_error:
             new_blog = Blog(blog_title, blog_body)
@@ -58,9 +58,9 @@ def new_post():
             blog_id = new_blog.id
             return redirect('/blog?id={0}'.format(blog_id))
         else:
-            return render_template('new_post.html', title=blog_title, body=blog_body, title_error=title_error, body_error=body_error)
+            return render_template('new_post.html', blog_title=blog_title, body=blog_body, title_error=title_error, body_error=body_error)
     else:
-        return render_template('new_post.html')
+        return render_template('new_post.html', title='New Post')
 
 
 if __name__ == '__main__':
