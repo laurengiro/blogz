@@ -1,5 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from hashutils import make_pw_hash, check_pw_hash
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -7,6 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:blogzpw@localhost
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'y337kGcys&zP3B'
+
 
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,16 +22,17 @@ class Blog(db.Model):
         self.body = body
         self.owner = owner
 
+
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(120))
+    pw_hash = db.Column(db.String(120))
     blogs = db.relationship('Blog', backref='owner')
 
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.pw_hash = make_pw_hash(password)
 
 
 @app.before_request
@@ -45,7 +49,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user:
-            if user.password == password:
+            if check_pw_hash(password, user.pw_hash):
                 session['username'] = username
                 flash('Logged in')
                 return redirect('/newpost')
