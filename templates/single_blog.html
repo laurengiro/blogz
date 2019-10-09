@@ -9,6 +9,9 @@
 <p>
     {{blog.body}}
 </p>
+<p class='author'>
+    written by <a href='/blog?user={{blog.owner.id}}'>{{blog.owner.username}}</a>
+</p>
 {% endfor %}
 
 {% endblock %}

@@ -1,24 +1,68 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{{title}}</title>
-        <style>
-            .error{
-                color: red;
-                font-style: italic;
-            }
-        </style>
-    </head>
-    <body>
 
-        <nav>
-            <a href='/blog'>Main Blog Page</a> |
-            <a href='/newpost'>Add a Blog Entry</a>
-        </nav>
+<head>
+    <title>Blogz</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .error {
+            color: red;
+            font-style: italic;
+        }
+
+        .author {
+            font-style: italic;
+        }
+
+        nav ul {
+            padding: 0;
+            display: inline-block;
+        }
+
+        nav ul li {
+            list-style: none;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        nav #account-options {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href='/'>Home</a></li>
+            <li><a href='/blog'>All Posts</a></li>
+            <li><a href='/newpost'>New Post</a></li>
+        </ul>
+        <ul id='account-options'>
+            <li><a href='/login'>Login</a></li>
+            <li><a href='/logout'>Logout</a></li>
+        </ul>
+    </nav>
 
 
-        {% block content %}
-        {% endblock %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    <ul>
+        {% for category,message in messages %}
+        <li class="{{category}}">{{message}}</li>
+        {% endfor %}
+    </ul>
+    {% endwith %}
 
-    </body>
+    {% block content %}
+    {% endblock %}
+
+</body>
+
 </html>
